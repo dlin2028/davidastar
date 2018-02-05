@@ -63,7 +63,7 @@ namespace DavidAStar
 
             for (int i = 0; i < vertexA.Edges.Count; i++)
             {
-                if(vertexA.Edges[i].A == vertexA && vertexA.Edges[i].B == vertexB)
+                if (vertexA.Edges[i].A == vertexA && vertexA.Edges[i].B == vertexB)
                 {
                     vertexA.Edges.RemoveAt(i);
                     break;
@@ -94,10 +94,10 @@ namespace DavidAStar
             return verticies.Contains(vertex);
         }
 
-        public void GetPathTo(T start, T end)
+        public Stack<Vertex<T>> GetPathTo(T start, T end)
         {
             FindPath(Verticies[start], Verticies[end]);
-            GetPath(end);
+            return GetPath(end);
         }
 
 
@@ -105,47 +105,58 @@ namespace DavidAStar
         {
             foreach (Vertex<T> v in verticies)
             {
-                v.Heuristic = v.Position.Distance(finish.Position);
                 v.Distance = int.MaxValue;
                 v.Host = null;
+                v.Visited = false;
             }
+            start.Distance = 0;
 
             SortedList<float, Vertex<T>> nextNodes;
             nextNodes = new SortedList<float, Vertex<T>>();
 
             nextNodes.Add(start.Heuristic, start);
 
-            while(nextNodes.Count > 0)
+            while (nextNodes.Count > 0)
             {
-                Vertex<T> currentNode = nextNodes[0];
+                Vertex<T> currentNode = nextNodes.Values[0];
                 nextNodes.RemoveAt(0);
 
                 currentNode.Visited = true;
 
-                foreach(Edge<T> edge in currentNode.Edges)
+                if (currentNode == finish)
+                {
+                    break;
+                }
+
+                foreach (Edge<T> edge in currentNode.Edges)
                 {
                     Vertex<T> friend = edge.B;
                     if (edge.B == currentNode)
                     {
                         continue;
                     }
+                    Console.Write(friend.Item);
+
+                    if (friend.Visited) continue;
 
                     float newDistance = currentNode.Distance + edge.Weight;
-                    if (!friend.Visited)
+                    if (friend.Distance > newDistance)
                     {
-                        friend.Distance = newDistance;
                         friend.Host = currentNode;
-                        friend.Visited = true;
-                        nextNodes.Add(friend.distic, friend);
+                        friend.Distance = newDistance;
+                        friend.Heuristic = friend.Position.Distance(finish.Position);
                     }
-                    else if (friend.Distance > newDistance && friend.Visited)
+
+                    if (!nextNodes.ContainsValue(friend))
                     {
-                        friend.Distance = newDistance;
-                        friend.Host = currentNode;
                         nextNodes.Add(friend.distic, friend);
                     }
                 }
             }
+            Console.WriteLine();
+            Console.WriteLine("OUTPUT");
+            Console.WriteLine("--------------");
+            //construct path
         }
 
 
@@ -155,19 +166,15 @@ namespace DavidAStar
         }
         public Stack<Vertex<T>> GetPath(Vertex<T> vertex)
         {
-            Stack<Vertex<T>> stack1 = new Stack<Vertex<T>>();
-            Stack<Vertex<T>> stack2 = new Stack<Vertex<T>>();
-            stack1.Push(vertex);
+            Stack<Vertex<T>> stack = new Stack<Vertex<T>>();
+
+            stack.Push(vertex);
             while (vertex.Host != null)
             {
-                stack1.Push(vertex.Host);
+                stack.Push(vertex.Host);
                 vertex = vertex.Host;
             }
-            while(stack1.Count > 0)
-            {
-                stack2.Push(stack1.Pop());
-            }
-            return stack2;
+            return stack;
         }
     }
 }

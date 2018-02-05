@@ -77,7 +77,38 @@ namespace DavidAStar
                 }
                 else if(input == "path")
                 {
+                    Console.Write("Start Node: ");
+                    string start = Console.ReadLine();
+                    Console.Write("End Node: ");
+                    string end = Console.ReadLine();
 
+                    Stack<Vertex<string>> stack = graph.GetPathTo(start, end);
+                    
+                    if(stack.Count == 1)
+                    {
+                        Console.WriteLine("No path found");
+                        continue;
+                    }
+
+                    while(stack.Count > 0)
+                    {
+                        Console.WriteLine(stack.Pop().Item);
+                    }
+                }
+                else if(input == "lazy")
+                {
+                    graph.AddVertex(new Vertex<string>("a", 0, 0));
+                    graph.AddVertex(new Vertex<string>("b", 5, 0));
+                    graph.AddVertex(new Vertex<string>("c", 5, 4));
+                    graph.AddVertex(new Vertex<string>("d", 5, 5));
+                    graph.AddVertex(new Vertex<string>("e", 4, 4));
+                    graph.AddVertex(new Vertex<string>("f", 5, 100));
+                    graph.AddPair("a", "b");
+                    graph.AddPair("b", "c");
+                    graph.AddPair("c", "d");
+                    graph.AddPair("a", "e");
+                    graph.AddPair("f", "d");
+                    graph.AddPair("e", "f");
                 }
                 else
                 {
