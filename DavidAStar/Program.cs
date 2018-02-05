@@ -75,6 +75,10 @@ namespace DavidAStar
                     Console.WriteLine(graph.HasVertex(new Vertex<string>(value)));
 
                 }
+                else if(input == "path")
+                {
+
+                }
                 else
                 {
                     Console.WriteLine("Available commands: addpair addvertex removevertex hasvertex depth breadth");

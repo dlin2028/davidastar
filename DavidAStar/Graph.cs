@@ -94,6 +94,13 @@ namespace DavidAStar
             return verticies.Contains(vertex);
         }
 
+        public void GetPathTo(T start, T end)
+        {
+            FindPath(Verticies[start], Verticies[end]);
+            GetPath(end);
+        }
+
+
         public void FindPath(Vertex<T> start, Vertex<T> finish)
         {
             foreach (Vertex<T> v in verticies)
